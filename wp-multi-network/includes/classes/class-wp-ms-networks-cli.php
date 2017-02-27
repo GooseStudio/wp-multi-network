@@ -41,6 +41,8 @@ class WP_MS_Network_Command extends WP_CLI_Command {
 	 * [--options_to_clone=<options_to_clone>]
 	 * : Options to clone to new network
 	 *
+     * [--porcelain]
+     * : If set, only the network id will be output on success.
 	 */
 	public function create( $args, $assoc_args ) {
 
@@ -91,8 +93,11 @@ class WP_MS_Network_Command extends WP_CLI_Command {
 		if ( is_wp_error( $network_id ) ) {
 			WP_CLI::error( $network_id );
 		}
-
-		WP_CLI::success( sprintf( __( 'Created network %d.', 'wp-multi-network' ), $network_id ) );
+        if ( \WP_CLI\Utils\get_flag_value( $assoc_args, 'porcelain' ) ) {
+            WP_CLI::line( $network_id );
+        } else {
+            WP_CLI::success( sprintf( __( 'Created network %d.', 'wp-multi-network' ), $network_id ) );
+        }
 	}
 
 	/**
