@@ -70,13 +70,15 @@ class WP_MS_Network_Command extends WP_CLI_Command {
 		$clone_network    = $assoc_args['clone_network'];
 		$options_to_clone = false;
 
-		if ( ! empty( $clone_network ) && ! get_network( $clone_network ) ) {
-			WP_CLI::error( sprintf( __( "Clone network %s doesn't exist.", 'wp-multi-network' ), $clone_network ) );
-
-			if ( ! empty( $assoc_args['options_to_clone'] ) ) {
-				$options_to_clone = explode( ",", $assoc_args['options_to_clone'] );
-			}
-		}
+        if ( ! empty( $clone_network ) ) {
+            if ( ! get_network( $clone_network ) ) {
+                WP_CLI::error( sprintf( __( "Clone network %s doesn't exist.", 'wp-multi-network' ), $clone_network ) );
+            } else if ( ! empty( $assoc_args['options_to_clone'] ) ) {
+                $options_to_clone = explode( ",", $assoc_args['options_to_clone'] );
+            } else {
+                $options_to_clone = network_options_to_copy();
+            }
+        }
 
 		// Add the network
 		$network_id = add_network( array(
